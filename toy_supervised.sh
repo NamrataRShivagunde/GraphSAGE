@@ -1,0 +1,1 @@
+python -m graphsage.supervised_train --train_prefix ./toy-data/processed/karate --model graphsage_mean --sigmoid
