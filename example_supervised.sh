@@ -1,1 +1,2 @@
-python -m graphsage.supervised_train --train_prefix ./example_data/ppi --model graphsage_mean --sigmoid
+#python -m graphsage.supervised_train --train_prefix ./data/processed/karate --model graphsage_mean --sigmoid
+python -m graphsage.supervised_train --train_prefix ./wikidata/processed_wiki/wiki --model graphsage_mean --sigmoid

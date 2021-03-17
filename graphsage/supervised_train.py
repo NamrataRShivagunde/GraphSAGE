@@ -75,6 +75,7 @@ def evaluate(sess, model, minibatch_iter, size=None):
     feed_dict_val, labels = minibatch_iter.node_val_feed_dict(size)
     node_outs_val = sess.run([model.preds, model.loss], 
                         feed_dict=feed_dict_val)
+
     mic, mac = calc_f1(labels, node_outs_val[0])
     return node_outs_val[1], mic, mac, (time.time() - t_test)
 
@@ -107,7 +108,15 @@ def incremental_evaluate(sess, model, minibatch_iter, size, test=False):
     val_preds = np.vstack(val_preds)
     labels = np.vstack(labels)
     f1_scores = calc_f1(labels, val_preds)
+
+    #Nammu added code--------
+    with open(log_dir() + "labels.txt", "w") as fp:
+        fp.write(str(labels))
+    with open(log_dir() + "val_preds.txt", "w") as fp:
+        fp.write(str(val_preds))
+    #-------------till here
     return np.mean(val_losses), f1_scores[0], f1_scores[1], (time.time() - t_test)
+
 
 def construct_placeholders(num_classes):
     # Define placeholders
