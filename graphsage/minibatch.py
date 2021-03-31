@@ -216,10 +216,10 @@ class NodeMinibatchIterator(object):
         self.train_nodes = [n for n in self.train_nodes if self.deg[id2idx[n]] > 0]
 
     def _make_label_vec(self, node):
-        if node in self.label_map.keys(): 
-                label = self.label_map[node]
-        else:
-            label = random.randint(0,20)
+        #if node in self.label_map.keys(): 
+        label = self.label_map[node]
+        #else:
+            #label = random.randint(0,20)
         if isinstance(label, list):
             label_vec = np.array(label)
         else:
