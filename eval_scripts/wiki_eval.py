@@ -17,17 +17,17 @@ def run_regression(train_embeds, train_labels, test_embeds, test_labels):
     from sklearn.linear_model import SGDClassifier
     from sklearn.dummy import DummyClassifier
     from sklearn.metrics import f1_score
-    from sklearn.multioutput import MultiOutputClassifier
-    dummy = MultiOutputClassifier(DummyClassifier())
+    dummy = DummyClassifier()
     dummy.fit(train_embeds, train_labels)
-    log = MultiOutputClassifier(SGDClassifier(loss="log"), n_jobs=10)
+    log = SGDClassifier(loss="log", n_jobs=55)
     log.fit(train_embeds, train_labels)
 
-    f1 = 0
-    for i in range(test_labels.shape[1]):
-        print("F1 score", f1_score(test_labels[:,i], log.predict(test_embeds)[:,i], average="micro"))
-    for i in range(test_labels.shape[1]):
-        print("Random baseline F1 score", f1_score(test_labels[:,i], dummy.predict(test_embeds)[:,i], average="micro"))
+    print("Test scores")
+    print(f1_score(test_labels, log.predict(test_embeds), average="micro"))
+    print("Train scores")
+    print(f1_score(train_labels, log.predict(train_embeds), average="micro"))
+    print("Random baseline")
+    print(f1_score(test_labels, dummy.predict(test_embeds), average="micro"))
 
 if __name__ == '__main__':
     parser = ArgumentParser("Run evaluation on wiki data.")
