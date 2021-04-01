@@ -42,7 +42,7 @@ if __name__ == '__main__':
     print("Loading data...")
     G = json_graph.node_link_graph(json.load(open(dataset_dir + "/wiki-G.json")))
     labels = json.load(open(dataset_dir + "/wiki-class_map.json"))
-    labels = {int(i):l for i, l in labels.items()}
+    # labels = {int(i):l for i, l in labels.items()}
     
     train_ids = [n for n in G.nodes() if not G.node[n]['val'] and not G.node[n]['test'] and not G.node[n]['no_label']]
     test_ids = [n for n in G.nodes() if G.node[n][setting]]
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         id_map = {}
         with open(data_dir + "/val.txt") as fp:
             for i, line in enumerate(fp):
-                id_map[int(line.strip())] = i
+                id_map[line.strip()] = i
         train_embeds = embeds[[id_map[id] for id in train_ids]] 
         test_embeds = embeds[[id_map[id] for id in test_ids]] 
 
