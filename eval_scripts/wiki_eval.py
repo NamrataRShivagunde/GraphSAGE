@@ -44,7 +44,7 @@ if __name__ == '__main__':
     labels = json.load(open(dataset_dir + "/wiki-class_map.json"))
     labels = {int(i):l for i, l in labels.items()}
     
-    train_ids = [n for n in G.nodes() if not G.node[n]['val'] and not G.node[n]['test']]
+    train_ids = [n for n in G.nodes() if not G.node[n]['val'] and not G.node[n]['test'] and not G.node[n]['no_label']]
     test_ids = [n for n in G.nodes() if G.node[n][setting]]
     train_labels = np.array([labels[i] for i in train_ids])
     if train_labels.ndim == 1:
