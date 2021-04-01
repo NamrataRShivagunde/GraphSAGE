@@ -87,7 +87,7 @@ if __name__ == '__main__':
         print("Running regression..")
         y_preds = run_regression(train_embeds, train_labels, test_embeds, test_labels)
 
-        print("Saving results to {}"format(output_results_file))
+        print("Saving results to {}".format(output_results_file))
         with open(output_results_file, 'w') as fp:
             for i, test_id in enumerate(test_ids):
                 fp.write(test_id + " " + y_preds[i] + "\n")
