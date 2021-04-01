@@ -11,6 +11,7 @@ Baseline of using features-only can be run by setting data_dir as 'feat'
 Example:
   python eval_scripts/wiki_eval.py ../data/ppi unsup-ppi/n2v_big_0.000010 test
 '''
+batch_size = 512
 
 def batch(iterable, n=1):
     l = len(iterable)
@@ -19,7 +20,6 @@ def batch(iterable, n=1):
 
 
 def run_regression(train_embeds, train_labels, test_embeds, test_labels):
-    batch_size = 512
     np.random.seed(1)
     from sklearn.linear_model import SGDClassifier
     from sklearn.dummy import DummyClassifier
