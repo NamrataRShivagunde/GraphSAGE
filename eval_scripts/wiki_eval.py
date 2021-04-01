@@ -12,7 +12,14 @@ Example:
   python eval_scripts/wiki_eval.py ../data/ppi unsup-ppi/n2v_big_0.000010 test
 '''
 
+def batch(iterable, n=1):
+    l = len(iterable)
+    for ndx in range(0, l, n):
+        yield iterable[ndx:min(ndx + n, l)]
+
+
 def run_regression(train_embeds, train_labels, test_embeds, test_labels):
+    batch_size = 512
     np.random.seed(1)
     from sklearn.linear_model import SGDClassifier
     from sklearn.dummy import DummyClassifier
@@ -21,9 +28,13 @@ def run_regression(train_embeds, train_labels, test_embeds, test_labels):
     dummy.fit(train_embeds, train_labels)
     log = SGDClassifier(loss="log", n_jobs=55)
     log.fit(train_embeds, train_labels)
+    return log
+    # y_preds = log.predict(test_embeds)
 
-    y_preds = log.predict(test_embeds)
-    return y_preds
+
+            # for i, test_id in enumerate(test_ids):
+            #     fp.write(test_id + " " + y_preds[i] + "\n")
+    
     
 
     # print("Test scores")
@@ -85,12 +96,19 @@ if __name__ == '__main__':
         test_embeds = embeds[[id_map[id] for id in test_ids]] 
 
         print("Running regression..")
-        y_preds = run_regression(train_embeds, train_labels, test_embeds, test_labels)
+        log = run_regression(train_embeds, train_labels, test_embeds, test_labels)
 
         print("Saving results to {}".format(output_results_file))
         with open(output_results_file, 'w') as fp:
-            for i, test_id in enumerate(test_ids):
-                fp.write(test_id + " " + y_preds[i] + "\n")
+            for test_ids_batch in batch(test_ids, batch_size):
+                test_embeds_batch = embeds[[id_map[id] for id in test_ids_batch]] 
+                y_preds_batch = log.predict(test_embeds_batch)
+                batch_results = [test_id + " " + y_preds_batch[i] for i, test_id in enumerate(test_ids_batch)]
+
+        # print("Saving results to {}".format(output_results_file))
+        # with open(output_results_file, 'w') as fp:
+        #     for i, test_id in enumerate(test_ids):
+        #         fp.write(test_id + " " + y_preds[i] + "\n")
 
         
 
