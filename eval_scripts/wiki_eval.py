@@ -22,22 +22,28 @@ def run_regression(train_embeds, train_labels, test_embeds, test_labels):
     log = SGDClassifier(loss="log", n_jobs=55)
     log.fit(train_embeds, train_labels)
 
-    print("Test scores")
-    print(f1_score(test_labels, log.predict(test_embeds), average="micro"))
-    print("Train scores")
-    print(f1_score(train_labels, log.predict(train_embeds), average="micro"))
-    print("Random baseline")
-    print(f1_score(test_labels, dummy.predict(test_embeds), average="micro"))
+    y_preds = log.predict(test_embeds)
+    return y_preds
+    
+
+    # print("Test scores")
+    # print(f1_score(test_labels, log.predict(test_embeds), average="micro"))
+    # print("Train scores")
+    # print(f1_score(train_labels, log.predict(train_embeds), average="micro"))
+    # print("Random baseline")
+    # print(f1_score(test_labels, dummy.predict(test_embeds), average="micro"))
 
 if __name__ == '__main__':
     parser = ArgumentParser("Run evaluation on wiki data.")
     parser.add_argument("dataset_dir", help="Path to directory containing the dataset.")
     parser.add_argument("embed_dir", help="Path to directory containing the learned node embeddings. Set to 'feat' for raw features.")
     parser.add_argument("setting", help="Either val or test.")
+    parser.add_argument("out_y_preds_file", help="Path to Output predictions file")
     args = parser.parse_args()
     dataset_dir = args.dataset_dir
     data_dir = args.embed_dir
     setting = args.setting
+    output_results_file = args.out_y_preds_file
 
     print("Loading data...")
     G = json_graph.node_link_graph(json.load(open(dataset_dir + "/wiki-G.json")))
@@ -79,4 +85,12 @@ if __name__ == '__main__':
         test_embeds = embeds[[id_map[id] for id in test_ids]] 
 
         print("Running regression..")
-        run_regression(train_embeds, train_labels, test_embeds, test_labels)
+        y_preds = run_regression(train_embeds, train_labels, test_embeds, test_labels)
+
+        print("Saving results to {}"format(output_results_file))
+        with open(output_results_file, 'w') as fp:
+            for i, test_id in enumerate(test_ids):
+                fp.write(test_id + " " + y_preds[i] + "\n")
+
+        
+
