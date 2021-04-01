@@ -103,7 +103,7 @@ if __name__ == '__main__':
             for test_ids_batch in batch(test_ids, batch_size):
                 test_embeds_batch = embeds[[id_map[id] for id in test_ids_batch]] 
                 y_preds_batch = log.predict(test_embeds_batch)
-                batch_results = [test_id + " " + y_preds_batch[i] for i, test_id in enumerate(test_ids_batch)]
+                batch_results = [test_id + " " + y_preds_batch[i] +"\n" for i, test_id in enumerate(test_ids_batch)]
                 fp.writelines(batch_results)
 
         # print("Saving results to {}".format(output_results_file))
